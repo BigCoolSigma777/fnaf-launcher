@@ -3,146 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>FNaF Hub - Fazbear Systems</title>
+    <title>FNaF Hub - Database</title>
     <style>
         body {
             margin: 0; padding: 0;
             background-color: #010101; color: #eee;
             font-family: 'Courier New', Courier, monospace;
-            height: 100vh; display: flex; flex-direction: column; align-items: center;
+            height: 100vh; display: flex; flex-direction: column;
             overflow: hidden;
         }
 
-        /* --- TV EFFECTS (CRT) --- */
-        .crt-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.05), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.05)); z-index: 100; background-size: 100% 3px, 3px 100%; pointer-events: none; }
-        .crt-scanline { position: fixed; top: 0; left: 0; width: 100%; height: 100px; background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.03), transparent); z-index: 101; pointer-events: none; animation: scanline 8s linear infinite; }
-        @keyframes scanline { 0% { top: -100px; } 100% { top: 100%; } }
-        .static-noise { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url('https://giphy.com'); opacity: 0.07; z-index: 99; pointer-events: none; mix-blend-mode: screen; }
-        .flicker { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(18, 16, 16, 0.1); opacity: 0; z-index: 102; pointer-events: none; animation: flicker 0.15s infinite; }
-        @keyframes flicker { 0% { opacity: 0.1; } 50% { opacity: 0.02; } 100% { opacity: 0.09; } }
+        /* --- BACKGROUND FREDDY (MOVED TO RIGHT) --- */
+        .freddy-container {
+            position: fixed; bottom: 0; right: -5%; /* Сдвинут вправо */
+            width: 70vh; height: 90vh;
+            z-index: 1; pointer-events: none;
+            animation: twitch 4s infinite;
+        }
+        .freddy-bg {
+            width: 100%; height: 100%;
+            background: url('https://imgur.com') no-repeat bottom right;
+            background-size: contain; opacity: 0.12; /* Чуть ярче */
+            filter: brightness(0.6);
+        }
+        .freddy-eyes {
+            position: absolute; top: 32%; right: 42%;
+            display: flex; justify-content: space-between; width: 90px;
+        }
+        .eye-dot {
+            width: 5px; height: 5px; background: #fff; border-radius: 50%;
+            box-shadow: 0 0 10px #fff; opacity: 0.6;
+        }
+
+        @keyframes twitch {
+            0%, 92% { transform: translate(0,0); }
+            93% { transform: translate(5px, -3px); }
+            95% { transform: translate(-3px, 5px); }
+            96% { transform: translate(0,0); }
+        }
+
+        /* --- EFFECTS --- */
+        .static-noise { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url('https://giphy.com'); opacity: 0.06; z-index: 99; pointer-events: none; mix-blend-mode: screen; }
+        .crt-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(18,16,16,0) 50%, rgba(0,0,0,0.1) 50%); background-size: 100% 3px; z-index: 100; pointer-events: none; }
 
         /* --- WARNING --- */
         #warning-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; z-index: 999; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .warning-box { color: red; border: 4px solid red; padding: 30px; text-align: center; animation: pulse 2s infinite; max-width: 80%; }
 
-        /* --- FREDDY BG --- */
-        .freddy-container { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 75vh; height: 75vh; z-index: 1; pointer-events: none; animation: twitch 4s infinite; }
-        .freddy-bg { width: 100%; height: 100%; background: url('https://imgur.com') no-repeat center; background-size: contain; opacity: 0.09; filter: brightness(0.5); }
-        .freddy-eyes { position: absolute; top: 36%; left: 50%; transform: translateX(-50%); display: flex; justify-content: space-between; width: 105px; }
-        .eye-dot { width: 4px; height: 4px; background: #fff; border-radius: 50%; box-shadow: 0 0 8px #fff, 0 0 12px #fff; opacity: 0.5; animation: eyeFade 5s infinite; }
+        /* --- MENU (MOVED TO LEFT) --- */
+        #main-title { font-size: 1.2rem; letter-spacing: 5px; color: #444; margin: 20px 40px; z-index: 20; text-align: left; }
+        
+        .scroll-container { 
+            width: 100%; overflow-y: auto; 
+            padding-left: 30px; /* Отступ слева */
+            z-index: 20; padding-bottom: 100px;
+        }
+        
+        .menu-container { 
+            display: flex; flex-direction: column; gap: 20px; 
+            width: 60%; /* Занимает левую часть */
+            max-width: 500px; 
+        }
 
-        @keyframes twitch { 0%, 92%, 100% { transform: translate(-50%, -50%); } 93% { transform: translate(-49%, -51%); } 95% { transform: translate(-51%, -49%); } }
-        @keyframes eyeFade { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.8; } }
+        /* BIGGER JITTERING FRAMES */
+        .menu-btn {
+            background: rgba(5, 5, 5, 0.8); border: 1px solid #222;
+            color: #888; text-decoration: none; display: flex; align-items: center;
+            padding: 15px; transition: 0.3s;
+            height: 120px; /* Рамки стали больше */
+            animation: frameJitter 5s infinite;
+        }
 
-        /* --- MENU --- */
-        #main-title { font-size: 1rem; letter-spacing: 5px; color: #333; margin: 15px 0; z-index: 20; text-shadow: 2px 0 red, -2px 0 blue; }
-        .scroll-container { width: 100%; overflow-y: auto; display: flex; flex-direction: column; align-items: center; z-index: 20; padding-bottom: 80px; }
-        .menu-container { display: flex; flex-direction: column; gap: 10px; width: 90%; max-width: 420px; }
+        @keyframes frameJitter {
+            0%, 98% { border-color: #222; transform: translateX(0); }
+            98.5% { border-color: #555; transform: translateX(2px); }
+            99% { border-color: #111; transform: translateX(-2px); }
+        }
 
-        .menu-btn { background: rgba(10, 10, 10, 0.8); border: 1px solid #222; color: #777; text-decoration: none; display: flex; align-items: center; padding: 10px; transition: 0.2s; position: relative; z-index: 30; }
-        .icon-wrapper { width: 60px; height: 60px; margin-right: 15px; flex-shrink: 0; }
-        .menu-btn img { width: 100%; height: 100%; filter: grayscale(1) contrast(1.2); transition: 0.3s; object-fit: cover; }
-        .menu-btn:hover { border-color: #fff; color: #fff; background: #1a1a1a; transform: translateX(5px); }
-        .menu-btn:hover img { filter: grayscale(0) brightness(1.2); }
-        .desc { font-size: 0.7rem; color: #555; display: none; margin-top: 3px; }
-        .menu-btn:hover .desc { display: block; }
+        .icon-wrapper { 
+            width: 100px; height: 100%; /* Постеры теперь большие */
+            margin-right: 25px; flex-shrink: 0; background: #000; overflow: hidden;
+            border: 1px solid #333;
+        }
+        .menu-btn img { width: 100%; height: 100%; filter: grayscale(1); object-fit: cover; transition: 0.4s; }
+        
+        .menu-btn:hover { border-color: #fff; color: #fff; background: #111; padding-left: 25px; }
+        .menu-btn:hover img { filter: grayscale(0) brightness(1.1); }
 
-        #settings-trigger { position: fixed; bottom: 20px; right: 20px; font-size: 40px; cursor: pointer; color: #222; z-index: 110; }
+        #settings-trigger { position: fixed; bottom: 30px; right: 30px; font-size: 50px; cursor: pointer; color: #222; z-index: 110; }
     </style>
 </head>
 <body>
 
     <div id="warning-screen" onclick="startSystem()">
-        <div class="warning-box">
-            <h1>WARNING</h1>
-            <p>AUDIO & VISUALS ACTIVE</p>
-            <p style="font-size: 0.8rem; color: white; margin-top: 20px;">[ CLICK TO INITIATE ]</p>
+        <div style="color:red; border: 2px solid red; padding: 40px; text-align: center;">
+            <h1 style="font-size: 3rem;">WARNING</h1>
+            <p>[ CLICK TO START SESSION ]</p>
         </div>
     </div>
 
-    <!-- ТВ-эффекты -->
     <div class="static-noise"></div>
     <div class="crt-overlay"></div>
-    <div class="crt-scanline"></div>
-    <div class="flicker"></div>
 
-    <!-- АУДИО -->
     <audio id="pc-hum" loop><source src="https://soundjay.com" type="audio/mpeg"></audio>
-    <audio id="bg-music" loop><source src="https://soundjay.com" type="audio/mpeg"></audio> <!-- Эмбиент ветра/гула -->
-    <audio id="hover-sound"><source src="https://soundjay.com" type="audio/mpeg"></audio> <!-- Короткий сигнал -->
-    <audio id="click-sound"><source src="https://soundjay.com" type="audio/mpeg"></audio> <!-- Клик -->
+    <audio id="bg-music" loop><source src="https://soundjay.com" type="audio/mpeg"></audio>
 
+    <!-- Freddy Background (RIGHT SIDE) -->
     <div class="freddy-container">
         <div class="freddy-bg"></div>
         <div class="freddy-eyes"><div class="eye-dot"></div><div class="eye-dot"></div></div>
     </div>
 
     <div id="settings-trigger">⚙</div>
-    <h1 id="main-title">FAZBEAR_DATABASE_v1.6</h1>
+    <h1 id="main-title">FAZBEAR_DATABASE_v1.7</h1>
 
     <div class="scroll-container">
         <div class="menu-container">
-            <a href="https://github.io" target="_blank" class="menu-btn" onmouseover="playHover()" onclick="playClick()">
+            <!-- Пример кнопки. Когда создашь папку, замени путь в src на "assets/fnaf1.jpg" -->
+            <a href="https://github.io" target="_blank" class="menu-btn">
                 <div class="icon-wrapper"><img src="https://imgur.com"></div>
-                <div><b>FNaF 1</b><div class="desc">Original 1993 security shift.</div></div>
+                <div><b style="font-size: 1.5rem;">FNaF 1</b><br><small>The classic shift.</small></div>
             </a>
-            <a href="https://github.io" target="_blank" class="menu-btn" onmouseover="playHover()" onclick="playClick()">
+            
+            <a href="https://github.io" target="_blank" class="menu-btn">
                 <div class="icon-wrapper"><img src="https://imgur.com"></div>
-                <div><b>FNaF 2</b><div class="desc">The grand re-opening. No doors.</div></div>
+                <div><b style="font-size: 1.5rem;">FNaF 2</b><br><small>New faces, no doors.</small></div>
             </a>
-            <a href="https://github.io" target="_blank" class="menu-btn" onmouseover="playHover()" onclick="playClick()">
+
+            <a href="https://github.io" target="_blank" class="menu-btn">
                 <div class="icon-wrapper"><img src="https://imgur.com"></div>
-                <div><b>FNaF 3</b><div class="desc">30 years later. Springtrap is here.</div></div>
+                <div><b style="font-size: 1.5rem;">FNaF 3</b><br><small>The horror attraction.</small></div>
             </a>
-            <a href="https://mit.edu" target="_blank" class="menu-btn" onmouseover="playHover()" onclick="playClick()">
+
+            <a href="https://mit.edu" target="_blank" class="menu-btn">
                 <div class="icon-wrapper"><img src="https://imgur.com"></div>
-                <div><b>FNaF 4</b><div class="desc">The final chapter at home.</div></div>
+                <div><b style="font-size: 1.5rem;">FNaF 4</b><br><small>Final chapter at home.</small></div>
             </a>
-            <a href="https://mit.edu" target="_blank" class="menu-btn" onmouseover="playHover()" onclick="playClick()">
-                <div class="icon-wrapper"><img src="https://imgur.com"></div>
-                <div><b>Sister Location</b><div class="desc">Deep below ground level.</div></div>
-            </a>
-            <a href="https://mit.edu" target="_blank" class="menu-btn" onmouseover="playHover()" onclick="playClick()">
-                <div class="icon-wrapper"><img src="https://imgur.com"></div>
-                <div><b>FNaF World</b><div class="desc">Fazbear RPG adventure.</div></div>
-            </a>
-            <a href="https://mit.edu" target="_blank" class="menu-btn" onmouseover="playHover()" onclick="playClick()">
-                <div class="icon-wrapper"><img src="https://imgur.com"></div>
-                <div><b>FNaF 6</b><div class="desc">Pizzeria Simulator & Salvaging.</div></div>
-            </a>
-            <a href="https://mit.edu" target="_blank" class="menu-btn" onmouseover="playHover()" onclick="playClick()">
-                <div class="icon-wrapper"><img src="https://imgur.com"></div>
-                <div><b>UCN</b><div class="desc">50 Animatronics custom night.</div></div>
-            </a>
+            <!-- Добавь остальные кнопки по этому же шаблону -->
         </div>
     </div>
 
-    <script src="https://telegram.org"></script>
     <script>
-        const hum = document.getElementById('pc-hum');
-        const music = document.getElementById('bg-music');
-        const hov = document.getElementById('hover-sound');
-        const clk = document.getElementById('click-sound');
-
         function startSystem() {
             document.getElementById('warning-screen').style.display = 'none';
-            
-            hum.volume = 0.15; hum.play();
-            music.volume = 0.4; music.play();
-            
-            if (window.Telegram && window.Telegram.WebApp) window.Telegram.WebApp.expand();
-        }
-
-        function playHover() {
-            hov.currentTime = 0;
-            hov.volume = 0.1;
-            hov.play().catch(e => {});
-        }
-
-        function playClick() {
-            clk.currentTime = 0;
-            clk.volume = 0.3;
-            clk.play().catch(e => {});
+            document.getElementById('pc-hum').volume = 0.2;
+            document.getElementById('bg-music').volume = 0.3;
+            document.getElementById('pc-hum').play();
+            document.getElementById('bg-music').play();
         }
     </script>
 </body>
