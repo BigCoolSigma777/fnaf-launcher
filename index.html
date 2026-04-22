@@ -7,76 +7,108 @@
     <style>
         body {
             margin: 0; padding: 0;
-            background-color: #020202; color: #eee;
+            background-color: #010101; color: #eee;
             font-family: 'Courier New', Courier, monospace;
             overflow: hidden; height: 100vh;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
 
-        /* --- BACKGROUND EFFECTS --- */
+        /* --- BACKGROUND FREDDY WITH GLOWING EYES --- */
+        .freddy-container {
+            position: fixed; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80vh; height: 80vh;
+            z-index: 1; pointer-events: none;
+        }
+
+        .freddy-bg {
+            width: 100%; height: 100%;
+            background: url('https://imgur.com') no-repeat center;
+            background-size: contain;
+            opacity: 0.03;
+            filter: brightness(0.5);
+        }
+
+        .freddy-eyes {
+            position: absolute;
+            top: 36%; /* Выравнивание под глазницы */
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            justify-content: space-between;
+            width: 110px; /* Расстояние между глазами */
+        }
+
+        .eye-dot {
+            width: 4px;
+            height: 4px;
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #fff, 0 0 15px #fff;
+            opacity: 0.4;
+            animation: eyePulse 4s infinite ease-in-out;
+        }
+
+        @keyframes eyePulse {
+            0%, 100% { opacity: 0.2; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.2); }
+        }
+
+        /* --- OVERLAY EFFECTS --- */
         .static {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: url('https://giphy.com');
-            opacity: 0.04; z-index: 10; pointer-events: none;
+            opacity: 0.05; z-index: 10; pointer-events: none;
         }
 
         .scanlines {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
-            background-size: 100% 3px, 2px 100%; z-index: 11; pointer-events: none;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+            background-size: 100% 4px; z-index: 11; pointer-events: none;
         }
 
-        /* --- BUTTONS JITTER & GLITCH --- */
-        @keyframes jitter {
-            0% { transform: translate(0,0); }
-            10% { transform: translate(-1px, -1px); }
-            20% { transform: translate(1px, 0px); }
-            30% { transform: translate(-1px, 1px); }
-            100% { transform: translate(0,0); }
-        }
-
-        @keyframes heavyGlitch {
-            0%, 90% { transform: translate(0,0) scale(1); filter: hue-rotate(0deg); }
-            91% { transform: translate(5px, -2px) scale(1.02); filter: hue-rotate(90deg); }
-            93% { transform: translate(-5px, 2px) scale(0.98); filter: hue-rotate(-90deg); }
-            95% { transform: translate(0,0); filter: hue-rotate(0deg); }
-        }
-
-        .menu-container { display: flex; flex-direction: column; gap: 15px; width: 90%; max-width: 420px; z-index: 20; }
-
-        .menu-btn {
-            background: rgba(10, 10, 10, 0.9); border: 1px solid #222;
-            color: #888; text-decoration: none; display: flex; align-items: center;
-            padding: 12px; transition: 0.3s; position: relative;
-            animation: jitter 0.3s infinite alternate, heavyGlitch 10s infinite;
-        }
-
-        .menu-btn img { width: 70px; height: 70px; margin-right: 15px; filter: grayscale(1); transition: 0.4s; }
-
-        .menu-btn:hover { border-color: #ff0000; color: #fff; background: #111; z-index: 30; }
-        .menu-btn:hover img { filter: grayscale(0) brightness(1.2); }
-
-        /* --- DESCRIPTIONS --- */
-        .desc { font-size: 0.7rem; color: #555; display: none; margin-top: 5px; line-height: 1.2; }
-        .menu-btn:hover .desc { display: block; color: #aaa; }
-
-        /* --- SETTINGS ICON --- */
-        #settings-trigger {
-            position: fixed; top: 20px; right: 20px; font-size: 24px;
-            cursor: pointer; color: #333; transition: 0.3s; z-index: 50;
-        }
-        #settings-trigger:hover { color: red; transform: rotate(90deg); }
-
-        /* --- WARNING --- */
+        /* --- WARNING SCREEN --- */
         #warning-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: black; z-index: 100; display: flex; align-items: center; justify-content: center;
-            text-align: center; cursor: pointer;
+            cursor: pointer;
         }
 
-        h1 { font-size: 1.2rem; letter-spacing: 4px; color: #444; margin-bottom: 30px; }
+        .warning-box { 
+            color: red; border: 4px solid red; padding: 50px; 
+            max-width: 80%; text-align: center;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0% { box-shadow: 0 0 10px red; } 50% { box-shadow: 0 0 30px red; } 100% { box-shadow: 0 0 10px red; } }
 
-        /* --- SETTINGS OVERLAY --- */
+        /* --- UI ELEMENTS --- */
+        h1 { font-size: 1.1rem; letter-spacing: 5px; color: #222; margin-bottom: 20px; z-index: 20; }
+
+        .menu-container { display: flex; flex-direction: column; gap: 15px; width: 90%; max-width: 450px; z-index: 20; }
+
+        .menu-btn {
+            background: rgba(5, 5, 5, 0.85); border: 1px solid #222;
+            color: #777; text-decoration: none; display: flex; align-items: center;
+            padding: 15px; transition: 0.3s; position: relative;
+            animation: jitter 0.4s infinite alternate;
+        }
+
+        @keyframes jitter { 0% { transform: translate(0,0); } 100% { transform: translate(1px, 1px); } }
+
+        .menu-btn img { width: 80px; height: 80px; margin-right: 20px; filter: grayscale(1); transition: 0.4s; }
+        .menu-btn:hover { border-color: #fff; color: #fff; background: #111; transform: translateX(10px); }
+        .menu-btn:hover img { filter: grayscale(0) brightness(1.2); }
+
+        .desc { font-size: 0.75rem; color: #444; display: none; margin-top: 5px; }
+        .menu-btn:hover .desc { display: block; }
+
+        /* --- SETTINGS ICON --- */
+        #settings-trigger {
+            position: fixed; bottom: 30px; right: 30px; font-size: 45px;
+            cursor: pointer; color: #222; transition: 0.5s; z-index: 50;
+        }
+        #settings-trigger:hover { color: #555; transform: rotate(180deg); }
+
         #settings-menu {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.98); z-index: 60; flex-direction: column; align-items: center; justify-content: center;
@@ -86,62 +118,70 @@
 <body>
 
     <div id="warning-screen" onclick="startSystem()">
-        <div style="color: red; border: 1px solid red; padding: 20px;">
-            <h1>WARNING</h1>
-            <p>LOUD AUDIO & DISTURBING CONTENT</p>
-            <p style="font-size: 0.7rem; color: white;">CLICK TO BOOT SYSTEM</p>
+        <div class="warning-box">
+            <h1 style="color: red; font-size: 3rem; margin: 0;">WARNING</h1>
+            <p style="font-size: 1.2rem; margin: 20px 0;">THIS SYSTEM CONTAINS FLASHING LIGHTS,<br>LOUD NOISES, AND JUMPSCARES.</p>
+            <p style="color: white; letter-spacing: 10px; margin-top: 50px;">[ CLICK TO PROCEED ]</p>
         </div>
     </div>
 
-    <!-- Background Ambience -->
     <audio id="pc-hum" loop>
         <source src="https://soundjay.com" type="audio/mpeg">
     </audio>
+
+    <!-- Freddy with Glowing Eyes -->
+    <div class="freddy-container">
+        <div class="freddy-bg"></div>
+        <div class="freddy-eyes">
+            <div class="eye-dot"></div>
+            <div class="eye-dot"></div>
+        </div>
+    </div>
 
     <div class="static"></div>
     <div class="scanlines"></div>
     
     <div id="settings-trigger" onclick="toggleSettings()">⚙</div>
 
-    <h1>FAZBEAR_SYSTEM_v1.0.4</h1>
+    <h1>FAZBEAR_DATABASE_v1.1</h1>
 
     <div class="menu-container">
         <a href="https://github.io" target="_top" class="menu-btn">
             <img src="https://imgur.com" alt="FNaF1">
             <div>
-                <b>FNaF 1: The Original</b>
-                <div class="desc">Welcome to your new summer job at Freddy Fazbear's Pizza. Survive 12AM to 6AM.</div>
+                <b>NIGHT SHIFT: PART I</b>
+                <div class="desc">The original terror. Monitor cameras, close doors, and don't run out of power.</div>
             </div>
         </a>
 
         <a href="https://github.io" target="_top" class="menu-btn">
             <img src="https://imgur.com" alt="FNaF2">
             <div>
-                <b>FNaF 2: No Doors</b>
-                <div class="desc">New characters join the cast. They are kid-friendly, updated with the latest in facial recognition.</div>
+                <b>NIGHT SHIFT: PART II</b>
+                <div class="desc">No doors this time. Use your mask and flashlight to stay alive.</div>
             </div>
         </a>
 
         <a href="https://github.io" target="_top" class="menu-btn">
             <img src="https://imgur.com" alt="FNaF3">
             <div>
-                <b>FNaF 3: Fazbear's Fright</b>
-                <div class="desc">Thirty years after Freddy Fazbear's Pizza closed its doors, the events that took place there have become nothing more than a rumor.</div>
+                <b>NIGHT SHIFT: PART III</b>
+                <div class="desc">One animatronic. Multiple phantoms. Survive the attraction.</div>
             </div>
         </a>
     </div>
 
     <div id="settings-menu">
         <h1 style="color:white">SYSTEM_CONFIG</h1>
-        <p style="color: red; cursor: pointer;" onclick="toggleSettings()">[ CLOSE_MENU ]</p>
+        <p style="color: red; cursor: pointer;" onclick="toggleSettings()">RETURN_TO_MAIN_FRAME</p>
     </div>
 
     <script>
         function startSystem() {
             document.getElementById('warning-screen').style.display = 'none';
             let audio = document.getElementById('pc-hum');
-            audio.volume = 0.3;
-            audio.play();
+            audio.volume = 0.2;
+            audio.play().catch(e => console.log("Audio blocked"));
         }
 
         function toggleSettings() {
@@ -149,7 +189,6 @@
             s.style.display = (s.style.display === 'flex') ? 'none' : 'flex';
         }
 
-        // Telegram Integration
         if (window.Telegram && window.Telegram.WebApp) {
             window.Telegram.WebApp.expand();
         }
