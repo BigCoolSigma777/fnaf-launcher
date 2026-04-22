@@ -14,57 +14,19 @@
         }
 
         /* --- TV EFFECTS (CRT) --- */
-        .crt-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), 
-                        linear-gradient(90deg, rgba(255, 0, 0, 0.05), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.05));
-            z-index: 100; background-size: 100% 3px, 3px 100%;
-            pointer-events: none;
-        }
+        .crt-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.05), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.05)); z-index: 100; background-size: 100% 3px, 3px 100%; pointer-events: none; }
+        .crt-scanline { position: fixed; top: 0; left: 0; width: 100%; height: 100px; background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.03), transparent); z-index: 101; pointer-events: none; animation: scanline 8s linear infinite; }
+        @keyframes scanline { 0% { top: -100px; } 100% { top: 100%; } }
+        .static-noise { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url('https://giphy.com'); opacity: 0.07; z-index: 99; pointer-events: none; mix-blend-mode: screen; }
+        .flicker { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(18, 16, 16, 0.1); opacity: 0; z-index: 102; pointer-events: none; animation: flicker 0.15s infinite; }
+        @keyframes flicker { 0% { opacity: 0.1; } 50% { opacity: 0.02; } 100% { opacity: 0.09; } }
 
-        .crt-scanline {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100px;
-            background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.03), transparent);
-            z-index: 101; pointer-events: none;
-            animation: scanline 8s linear infinite;
-        }
-
-        @keyframes scanline {
-            0% { top: -100px; }
-            100% { top: 100%; }
-        }
-
-        .static-noise {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: url('https://giphy.com');
-            opacity: 0.07; z-index: 99; pointer-events: none;
-            mix-blend-mode: screen;
-        }
-
-        /* Эффект мерцания экрана */
-        .flicker {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(18, 16, 16, 0.1); opacity: 0; z-index: 102;
-            pointer-events: none; animation: flicker 0.15s infinite;
-        }
-
-        @keyframes flicker {
-            0% { opacity: 0.1; } 50% { opacity: 0.02; } 100% { opacity: 0.09; }
-        }
-
-        /* --- WARNING SCREEN --- */
-        #warning-screen { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: black; z-index: 999; display: flex; align-items: center; justify-content: center; cursor: pointer;
-        }
+        /* --- WARNING --- */
+        #warning-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; z-index: 999; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .warning-box { color: red; border: 4px solid red; padding: 30px; text-align: center; animation: pulse 2s infinite; max-width: 80%; }
-        @keyframes pulse { 0%, 100% { box-shadow: 0 0 10px red; } 50% { box-shadow: 0 0 30px red; } }
 
-        /* --- FREDDY BACKGROUND --- */
-        .freddy-container {
-            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 75vh; height: 75vh; z-index: 1; pointer-events: none; animation: twitch 4s infinite;
-        }
+        /* --- FREDDY BG --- */
+        .freddy-container { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 75vh; height: 75vh; z-index: 1; pointer-events: none; animation: twitch 4s infinite; }
         .freddy-bg { width: 100%; height: 100%; background: url('https://imgur.com') no-repeat center; background-size: contain; opacity: 0.09; filter: brightness(0.5); }
         .freddy-eyes { position: absolute; top: 36%; left: 50%; transform: translateX(-50%); display: flex; justify-content: space-between; width: 105px; }
         .eye-dot { width: 4px; height: 4px; background: #fff; border-radius: 50%; box-shadow: 0 0 8px #fff, 0 0 12px #fff; opacity: 0.5; animation: eyeFade 5s infinite; }
@@ -77,14 +39,9 @@
         .scroll-container { width: 100%; overflow-y: auto; display: flex; flex-direction: column; align-items: center; z-index: 20; padding-bottom: 80px; }
         .menu-container { display: flex; flex-direction: column; gap: 10px; width: 90%; max-width: 420px; }
 
-        .menu-btn {
-            background: rgba(10, 10, 10, 0.8); border: 1px solid #222;
-            color: #777; text-decoration: none; display: flex; align-items: center;
-            padding: 10px; transition: 0.2s; position: relative; z-index: 30;
-        }
+        .menu-btn { background: rgba(10, 10, 10, 0.8); border: 1px solid #222; color: #777; text-decoration: none; display: flex; align-items: center; padding: 10px; transition: 0.2s; position: relative; z-index: 30; }
         .icon-wrapper { width: 60px; height: 60px; margin-right: 15px; flex-shrink: 0; }
         .menu-btn img { width: 100%; height: 100%; filter: grayscale(1) contrast(1.2); transition: 0.3s; object-fit: cover; }
-        
         .menu-btn:hover { border-color: #fff; color: #fff; background: #1a1a1a; transform: translateX(5px); }
         .menu-btn:hover img { filter: grayscale(0) brightness(1.2); }
         .desc { font-size: 0.7rem; color: #555; display: none; margin-top: 3px; }
@@ -98,61 +55,62 @@
     <div id="warning-screen" onclick="startSystem()">
         <div class="warning-box">
             <h1>WARNING</h1>
-            <p>CRT SYSTEM INITIALIZING</p>
-            <p style="font-size: 0.8rem; color: white; margin-top: 20px;">[ CLICK TO CONNECT ]</p>
+            <p>AUDIO & VISUALS ACTIVE</p>
+            <p style="font-size: 0.8rem; color: white; margin-top: 20px;">[ CLICK TO INITIATE ]</p>
         </div>
     </div>
 
-    <!-- ТВ-эффекты (всегда сверху) -->
+    <!-- ТВ-эффекты -->
     <div class="static-noise"></div>
     <div class="crt-overlay"></div>
     <div class="crt-scanline"></div>
     <div class="flicker"></div>
 
+    <!-- АУДИО -->
     <audio id="pc-hum" loop><source src="https://soundjay.com" type="audio/mpeg"></audio>
+    <audio id="bg-music" loop><source src="https://soundjay.com" type="audio/mpeg"></audio> <!-- Эмбиент ветра/гула -->
+    <audio id="hover-sound"><source src="https://soundjay.com" type="audio/mpeg"></audio> <!-- Короткий сигнал -->
+    <audio id="click-sound"><source src="https://soundjay.com" type="audio/mpeg"></audio> <!-- Клик -->
 
     <div class="freddy-container">
         <div class="freddy-bg"></div>
-        <div class="freddy-eyes">
-            <div class="eye-dot"></div>
-            <div class="eye-dot"></div>
-        </div>
+        <div class="freddy-eyes"><div class="eye-dot"></div><div class="eye-dot"></div></div>
     </div>
 
     <div id="settings-trigger">⚙</div>
-    <h1 id="main-title">FAZBEAR_DATABASE_v1.5</h1>
+    <h1 id="main-title">FAZBEAR_DATABASE_v1.6</h1>
 
     <div class="scroll-container">
         <div class="menu-container">
-            <a href="https://github.io" target="_blank" class="menu-btn">
+            <a href="https://github.io" target="_blank" class="menu-btn" onmouseover="playHover()" onclick="playClick()">
                 <div class="icon-wrapper"><img src="https://imgur.com"></div>
                 <div><b>FNaF 1</b><div class="desc">Original 1993 security shift.</div></div>
             </a>
-            <a href="https://github.io" target="_blank" class="menu-btn">
+            <a href="https://github.io" target="_blank" class="menu-btn" onmouseover="playHover()" onclick="playClick()">
                 <div class="icon-wrapper"><img src="https://imgur.com"></div>
                 <div><b>FNaF 2</b><div class="desc">The grand re-opening. No doors.</div></div>
             </a>
-            <a href="https://github.io" target="_blank" class="menu-btn">
+            <a href="https://github.io" target="_blank" class="menu-btn" onmouseover="playHover()" onclick="playClick()">
                 <div class="icon-wrapper"><img src="https://imgur.com"></div>
                 <div><b>FNaF 3</b><div class="desc">30 years later. Springtrap is here.</div></div>
             </a>
-            <a href="https://mit.edu" target="_blank" class="menu-btn">
+            <a href="https://mit.edu" target="_blank" class="menu-btn" onmouseover="playHover()" onclick="playClick()">
                 <div class="icon-wrapper"><img src="https://imgur.com"></div>
                 <div><b>FNaF 4</b><div class="desc">The final chapter at home.</div></div>
             </a>
-            <a href="https://mit.edu" target="_blank" class="menu-btn">
+            <a href="https://mit.edu" target="_blank" class="menu-btn" onmouseover="playHover()" onclick="playClick()">
                 <div class="icon-wrapper"><img src="https://imgur.com"></div>
                 <div><b>Sister Location</b><div class="desc">Deep below ground level.</div></div>
             </a>
-            <a href="https://mit.edu" target="_blank" class="menu-btn">
+            <a href="https://mit.edu" target="_blank" class="menu-btn" onmouseover="playHover()" onclick="playClick()">
                 <div class="icon-wrapper"><img src="https://imgur.com"></div>
                 <div><b>FNaF World</b><div class="desc">Fazbear RPG adventure.</div></div>
             </a>
-            <a href="https://mit.edu" target="_blank" class="menu-btn">
+            <a href="https://mit.edu" target="_blank" class="menu-btn" onmouseover="playHover()" onclick="playClick()">
                 <div class="icon-wrapper"><img src="https://imgur.com"></div>
                 <div><b>FNaF 6</b><div class="desc">Pizzeria Simulator & Salvaging.</div></div>
             </a>
-            <a href="https://mit.edu" target="_blank" class="menu-btn">
+            <a href="https://mit.edu" target="_blank" class="menu-btn" onmouseover="playHover()" onclick="playClick()">
                 <div class="icon-wrapper"><img src="https://imgur.com"></div>
                 <div><b>UCN</b><div class="desc">50 Animatronics custom night.</div></div>
             </a>
@@ -161,12 +119,30 @@
 
     <script src="https://telegram.org"></script>
     <script>
+        const hum = document.getElementById('pc-hum');
+        const music = document.getElementById('bg-music');
+        const hov = document.getElementById('hover-sound');
+        const clk = document.getElementById('click-sound');
+
         function startSystem() {
             document.getElementById('warning-screen').style.display = 'none';
-            let audio = document.getElementById('pc-hum');
-            audio.volume = 0.25;
-            audio.play().catch(e => {});
+            
+            hum.volume = 0.15; hum.play();
+            music.volume = 0.4; music.play();
+            
             if (window.Telegram && window.Telegram.WebApp) window.Telegram.WebApp.expand();
+        }
+
+        function playHover() {
+            hov.currentTime = 0;
+            hov.volume = 0.1;
+            hov.play().catch(e => {});
+        }
+
+        function playClick() {
+            clk.currentTime = 0;
+            clk.volume = 0.3;
+            clk.play().catch(e => {});
         }
     </script>
 </body>
